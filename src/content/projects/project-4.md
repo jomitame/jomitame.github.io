@@ -1,6 +1,6 @@
 ---
-title: 'Mobile Application and Web Platform'
-description: Java and Javascript.
+title: 'Mobile Application'
+description: Java.
 publishDate: 'Feb 25 2018'
 seo:
   image:
