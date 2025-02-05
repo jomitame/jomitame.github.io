@@ -51,23 +51,20 @@ const siteConfig: SiteConfig = {
             href: '/'
         },
         {
-            text: 'Projects',
+            text: 'About',
+            href: '/about'
+        },
+        {
+            text: 'Experience',
             href: '/projects'
         },
         {
             text: 'Blog',
             href: '/blog'
-        },
-        {
-            text: 'Tags',
-            href: '/tags'
         }
+
     ],
     footerNavLinks: [
-        {
-            text: 'About',
-            href: '/about'
-        },
         {
             text: 'Contact',
             href: '/contact'
@@ -75,6 +72,10 @@ const siteConfig: SiteConfig = {
         {
             text: 'Terms',
             href: '/terms'
+        },
+        {
+            text: 'Tags',
+            href: '/tags'
         }
     ],
     socialLinks: [
@@ -92,8 +93,8 @@ const siteConfig: SiteConfig = {
         }
     ],
     hero: {
-        title: 'About Me',
-        text: "I'm **Jose Miguel Tapias Mejia**, a python developer at Blessware, dedicated to the realms of collaboration and artificial intelligence. My approach involves embracing intuition, conducting just enough research, and leveraging aesthetics as a catalyst for exceptional products. I have a profound appreciation for top-notch software, visual design, and the principles of product-led growth. Feel free to explore some of my coding endeavors on <a href='https://github.com/jomitame'>GitHub</a>.",
+        title: '',
+        text: "I'm **Jose Miguel Tapias Mejia**, a softwer developer at Blessware, I have experience in web development with the **Python** programming language using **Django** and others framework like **Flask** and development of API Rest Full with **DjangoRestframework** and **FastAPI**. I characterize myself as a creative, persevering, orderly person, with a high sense of belonging and a willingness to change. Feel free to explore some of my coding endeavors on <a href='https://github.com/jomitame'>GitHub</a>.",
         image: {
             src: '/jose_tapias.png',
             alt: 'A person posing in front of a camera'
@@ -105,13 +106,9 @@ const siteConfig: SiteConfig = {
             }
         ]
     },
-    subscribe: {
-        title: 'Subscribe to Dante Newsletter',
-        text: 'One update per week. All the latest posts directly in your inbox.',
-        formUrl: '#'
-    },
-    postsPerPage: 8,
-    projectsPerPage: 8
+
+    postsPerPage: 5,
+    projectsPerPage: 5
 };
 
 export default siteConfig;
