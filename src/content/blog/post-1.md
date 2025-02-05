@@ -1,47 +1,94 @@
 ---
-title: The Advantages & Disadvantages of Working from Home
-excerpt: In recent years, the way we work has undergone a significant transformation, largely due to advancements in technology and changing attitudes toward work-life balance. One of the most notable changes has been the rise of remote work, allowing employees to work from the comfort of their own homes.
-publishDate: 'Aug 5 2023'
+title: "Advanced Django: Using Window Functions with Django's ORM"
+excerpt: "Learn how to harness the power of window functions in Django's ORM to perform advanced calculations directly in your database."
+publishDate: '2025-01-05'
 tags:
-  - Guide
+  - Python
+  - Django
+  - ORM
+  - Window Functions
 seo:
   image:
-    src: '/post-1.jpg'
-    alt: A person standing at the window
+    src: '/post-1.png'
+    alt: Database table filed with data
 ---
 
-![A person standing at the window](/post-1.jpg)
+![Database table filed with data](/post-1.png)
 
-**Note:** This post was created using Chat GPT to demonstrate the features of the _[Dante Astro.js theme functionality](https://justgoodui.com/astro-themes/dante/)_.
+If you're already familiar with Django, here's an advanced feature that isn’t often covered in basic tutorials but can be extremely powerful: **using window functions with Django’s ORM**.
 
-In recent years, the way we work has undergone a significant transformation, largely due to advancements in technology and changing attitudes toward work-life balance. One of the most notable changes has been the rise of remote work, allowing employees to work from the comfort of their own homes. While this shift has brought about many benefits, it has also introduced its fair share of challenges. Let's explore the advantages and disadvantages of working from home.
+Window functions allow you to perform calculations across a set of rows related to the current row without having to aggregate the entire result set. This technique is very useful for tasks such as obtaining rankings, running totals, moving averages, and more—directly from your database.
 
-## Advantages of Working from Home
+## Example: Ranking Orders per User
 
-1. **Flexibility:** One of the most significant advantages of remote work is the flexibility it offers. Employees can often set their own hours, which can be particularly beneficial for those with family responsibilities or other commitments.
+Imagine you have an `Order` model where each order is associated with a user and has a total monetary amount. You want to assign a ranking to each order per user, ordering them from the highest to the lowest total. With window functions, you can accomplish this easily.
 
-2. **Reduced Commute:** Eliminating the daily commute not only saves time but also reduces stress and expenses associated with transportation. This can lead to better mental health and increased job satisfaction.
+### Defining the Model
 
-3. **Cost Savings:** Working from home can result in significant cost savings. Employees can save money on transportation, work attire, and daily meals, which can have a positive impact on their overall financial well-being.
+In your `models.py`, define the `Order` model as follows:
 
-4. **Increased Productivity:** Many people find that they are more productive when working from home. The absence of office distractions and the ability to create a personalized work environment can lead to improved focus and efficiency.
+```python
+# models.py
+from django.db import models
+from django.contrib.auth.models import User
 
-5. **Work-Life Balance:** Remote work allows for better work-life balance. Employees can better manage their personal and professional lives, leading to reduced burnout and increased job satisfaction.
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+    date = models.DateTimeField(auto_now_add=True)
 
-> Your ability to discipline yourself to set clear goals and then work toward them every day will do more to guarantee your success than any other single factor.
+    def __str__(self):
+        return f'Order #{self.pk} - {self.user.username}'
+```
 
-## Disadvantages of Working from Home
+### Calculating
 
-1. **Isolation:** Remote work can be lonely. The absence of coworkers and face-to-face interaction can lead to feelings of isolation and loneliness, which may negatively impact mental health.
+To calculate the ranking, you can use Django’s Rank window function along with the Window class:
 
-2. **Difficulty in Communication:** Effective communication can be a challenge when working remotely. Misunderstandings, lack of clear communication, and delayed responses can hinder teamwork and collaboration.
+```python
+# Example in views.py or wherever you need the query
+from django.db.models import F, Window
+from django.db.models.functions import Rank
+from .models import Order
 
-3. **Work-Life Boundaries:** While remote work can improve work-life balance, it can also blur the lines between work and personal life. It can be challenging to establish clear boundaries, leading to overwork and burnout.
+# Annotate each order with its ranking within the same user, based on total (from highest to lowest)
+orders_with_ranking = Order.objects.annotate(
+    ranking=Window(
+        expression=Rank(),
+        partition_by=[F('user')],
+        order_by=F('total').desc()
+    )
+)
 
-4. **Technology Issues:** Technical problems, such as internet connectivity issues or software glitches, can disrupt work and cause frustration.
+# Print the results to see the ranking
+for order in orders_with_ranking.order_by('user', 'ranking'):
+    print(f'User: {order.user.username} | Order ID: {order.pk} | Total: {order.total} | Ranking: {order.ranking}')
 
-5. **Distractions:** Working from home can be riddled with distractions, ranging from household chores to noisy neighbors. Maintaining focus can be a constant struggle for some.
+```
 
-6. **Career Growth:** Some employees may feel that working remotely limits their opportunities for career advancement, as they may have less visibility within the organization.
+## Details and Advantages
 
-While it offers flexibility, cost savings, and improved work-life balance, it can also lead to isolation, communication challenges, and distractions. The key to successful remote work lies in finding a balance that suits individual preferences and addressing potential drawbacks through effective communication, time management, and self-discipline. As remote work continues to evolve, understanding and adapting to these advantages and disadvantages will be crucial for both employees and employers.
+- **Window and partition_by**: The partition_by parameter allows you to reset the ranking for each group (in this case, each user). This is similar to using GROUP BY but without collapsing the rows; each record remains available.
+
+- **order_by**: Defines the order within each partition. In this example, orders are sorted by total in descending order so that the order with the highest total gets ranking 1.
+
+- **Compatibility**: Note that window functions require database support (PostgreSQL is an excellent choice). Other databases, such as MySQL 8+ or recent versions of SQLite, can also work, but it’s important to verify compatibility according to your environment.
+
+- **Use Cases**: In addition to rankings, you could use window functions to:
+
+  - Calculate cumulative sums.
+  - Compute moving averages.
+  - Number rows (using RowNumber()).
+  - Perform dense ranking (DenseRank()).
+
+## Why is this important to know?
+
+1. **Efficiency**: Performing these calculations at the database level reduces the need to process data in Python, which can improve performance, especially with large datasets.
+
+2. **Reduced Complexity**: By avoiding subqueries or additional processing on the application server, your code becomes cleaner and more direct.
+
+3. **Flexibility**: Window functions offer great flexibility for complex analyses that would be difficult or inefficient to implement otherwise.
+
+This advanced use of Django’s ORM can make a big difference in applications that require data analysis or complex reporting, allowing you to harness the full power of your database.
+
+I hope this example is useful and opens up new possibilities for your Django projects. Let me know if you have any questions or if you’d like to dive deeper into another advanced topic!
