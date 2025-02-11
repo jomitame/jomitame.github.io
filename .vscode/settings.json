@@ -23,5 +23,11 @@
     "typescript.tsdk": "node_modules/typescript/lib",
     "files.associations": {
         "*.css": "tailwindcss",
-    }
+    },
+    "conventionalCommits.scopes": [
+        "ProjectDocumentation",
+        "ProjectData",
+        "ProjectConfiguration",
+        "ProjectStyles"
+    ]
 }
