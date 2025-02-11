@@ -94,7 +94,7 @@ const siteConfig: SiteConfig = {
     ],
     hero: {
         title: '',
-        text: "I'm **Jose Miguel Tapias Mejia**, a softwer developer at Blessware, I have experience in web development with the **Python** programming language using **Django** and others framework like **Flask** and development of API Rest Full with **DjangoRestframework** and **FastAPI**. I characterize myself as a creative, persevering, orderly person, with a high sense of belonging and a willingness to change. Feel free to explore some of my coding endeavors on <a href='https://github.com/jomitame'>GitHub</a>.",
+        text: "I'm a software developer at Blessware, I have experience in web development with the **Python** programming language using **Django** and others framework like **Flask** and development of API Rest Full with **DjangoRestframework** and **FastAPI**. I characterize myself as a creative, persevering, orderly person, with a high sense of belonging and a willingness to change. Feel free to explore some of my coding endeavors on <a href='https://github.com/jomitame'>GitHub</a>.",
         image: {
             src: '/jose_tapias.png',
             alt: 'A person posing in front of a camera'
